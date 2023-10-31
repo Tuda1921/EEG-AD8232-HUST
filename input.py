@@ -9,11 +9,21 @@ if serial.Serial:
 
 # Open the serial port
 s = serial.Serial("COM3", baudrate=57600)
+
+# wait 1 second
+start_time = time.time()
+end_time = time.time()
+while end_time - start_time <= 1:
+    data = s.readline()  # strip removes leading/trailing whitespace
+    end_time = time.time()
+
+# start
+N = 10
 x = 0
 y = []
 start_time = time.time()
 end_time = time.time()
-while end_time - start_time <= 5:
+while end_time - start_time <= N:
     x = x + 1
     data = s.readline()  # strip removes leading/trailing whitespace
     try:
@@ -23,17 +33,24 @@ while end_time - start_time <= 5:
         pass
     end_time = time.time()
 print(x)
-print(y)
 print(len(y))
+print(len(y) / N)
+print(y)
 
-flm = len(y)/5
+# Slidingwindow
+
+
+# FFT
+flm = len(y) / N
 L = len(y)
 Y = np.fft.fft(y)
 Y[0] = 0
 P2 = np.abs(Y / L)
 P1 = P2[:L // 2 + 1]
 P1[1:-1] = 2 * P1[1:-1]  # hàm chứa giá tr của fft
-plt.plot(P1)
+f1 = np.arange(len(P1)) * flm / len(P1) / 2  # scale x
+plt.plot(f1, P1)
+
 plt.show()
 
 s.close()
